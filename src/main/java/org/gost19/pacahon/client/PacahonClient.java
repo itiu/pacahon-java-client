@@ -141,6 +141,7 @@ public class PacahonClient
 				int stop = result.indexOf("\"\"\"", start + 3);
 
 				result = result.substring(start + 3, stop);
+
 				result = result.replaceAll("\\\\\"", "\"");
 
 				Model message = ModelFactory.createDefaultModel();
