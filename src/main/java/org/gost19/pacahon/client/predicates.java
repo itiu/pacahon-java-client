@@ -38,6 +38,7 @@ public class predicates
 	public static final String _gost19 = "gost19:";
 	public static final String _auth = "auth:";
 	public static final String _zdb = "zdb:";
+	public static final String _query = "query:";
 
 	public static final String _user_onto = "user_onto";
 

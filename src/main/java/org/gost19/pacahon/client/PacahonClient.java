@@ -3,6 +3,7 @@ package org.gost19.pacahon.client;
 import java.util.UUID;
 
 import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.zeromq.ZMQ;
 
@@ -33,13 +34,8 @@ public class PacahonClient
 
 		String msg = "{\n" + "\"@\" : \"msg:M" + msg_uuid + "\", \n" + "\"a\" : \"msg:Message\",\n"
 				+ "\"msg:sender\" : \"" + from + "\",\n" + "\"msg:reciever\" : \"pacahon\",\n"
-				+ "\"msg:command\" : \"get_ticket\",\n" + "\"msg:args\" :\n" + "{\n"
-				+ "\"auth:login\" : \"" + login + "\",\n" + "\"auth:credential\" : \"" + credential + "\"\n" + "}\n"
-				+ "}";
-
-		// "{msg:M" + msg_uuid.toString() + "\n" + "rdf:type msg:Message ;\n" + "msg:sender \"" + from
-		// + "\" ;\n" + "msg:reciever \"pacahon\" ;\n" + "msg:command \"get_ticket\" ;\n" + "msg:args\n" + "[\n"
-		// + "auth:login \"" + login + "\" ;\n" + "auth:credential \"" + credential + "\" ;\n" + "] .\0";
+				+ "\"msg:command\" : \"get_ticket\",\n" + "\"msg:args\" :\n" + "{\n" + "\"auth:login\" : \"" + login
+				+ "\",\n" + "\"auth:credential\" : \"" + credential + "\"\n" + "}\n" + "}";
 
 		socket.send(msg.getBytes(), 0);
 
@@ -51,89 +47,91 @@ public class PacahonClient
 
 		aa.size();
 
-		int pos = result.indexOf("auth:ticket");
+		String auth_tag = "auth:ticket";
+
+		int pos = result.indexOf(auth_tag);
 		if (pos > 0)
 		{
-			int start_pos = result.indexOf("\"", pos) + 1;
-			int end_pos = result.indexOf("\"", start_pos);
+			int start_pos = result.indexOf("\"", pos + auth_tag.length() + 1) + 1;
+			int end_pos = result.indexOf("\"", start_pos + 1);
 			ticket = result.substring(start_pos, end_pos);
 		}
 
 		return ticket;
 	}
 
-	/*
-	 * public boolean put(String ticket, Model data, String from) { UUID msg_uuid = UUID.randomUUID();
-	 * 
-	 * // преобразуем data в строку ByteArrayOutputStream baos = new ByteArrayOutputStream(); RDFWriter w =
-	 * data.getWriter("N3"); w.write(data, baos, ""); String str_data = baos.toString();
-	 * 
-	 * // отрезаем префиксы int last_prefix = str_data.lastIndexOf("@prefix"); if (last_prefix > 0) { last_prefix =
-	 * str_data.indexOf("> .", last_prefix); str_data = str_data.substring(last_prefix + 3); }
-	 * 
-	 * // меняем ["] на [\"] str_data = str_data.replaceAll("\"", "\\\\\"");
-	 * 
-	 * // model.write(baos, "N3");
-	 * 
-	 * String msg = "msg:M" + msg_uuid.toString() + "\n" + "rdf:type msg:Message ;\n" + "msg:sender \"" + from +
-	 * "\" ;\n" + "msg:ticket \"" + ticket + "\" ;\n" + "msg:reciever \"pacahon\" ;\n" + "msg:command \"put\" ;\n" +
-	 * "msg:args\n" + "\"\"\"" + str_data + "\"\"\" .\0";
-	 * 
-	 * // отправляем socket.send(msg.getBytes(), 0);
-	 * 
-	 * byte[] rr = socket.recv(0);
-	 * 
-	 * String result = new String(rr);
-	 * 
-	 * // проверяем все ли ок int pos = result.indexOf("msg:status"); if (pos > 0 && result.indexOf("ok", pos) > 0)
-	 * return true;
-	 * 
-	 * return false; }
-	 * 
-	 * public Model get(String ticket, Model arg, String from) throws Exception { UUID msg_uuid = UUID.randomUUID();
-	 * 
-	 * // преобразуем data в строку ByteArrayOutputStream baos = new ByteArrayOutputStream(); RDFWriter w =
-	 * arg.getWriter("N3"); w.write(arg, baos, ""); String str_data = baos.toString();
-	 * 
-	 * // отрезаем префиксы int last_prefix = str_data.lastIndexOf("@prefix"); if (last_prefix > 0) { last_prefix =
-	 * str_data.indexOf("> .", last_prefix); str_data = str_data.substring(last_prefix + 3); }
-	 * 
-	 * // меняем ["] на [\"] str_data = str_data.replaceAll("\"", "\\\\\"");
-	 * 
-	 * // model.write(baos, "N3");
-	 * 
-	 * String msg = "msg:M" + msg_uuid.toString() + "\n" + "rdf:type msg:Message ;\n" + "msg:sender \"" + from +
-	 * "\" ;\n" + "msg:ticket \"" + ticket + "\" ;\n" + "msg:reciever \"pacahon\" ;\n" + "msg:command \"get\" ;\n" +
-	 * "msg:args\n" + "\"\"\"" + str_data + "\"\"\" .\0";
-	 * 
-	 * // отправляем socket.send(msg.getBytes(), 0);
-	 * 
-	 * byte[] rr = socket.recv(0);
-	 * 
-	 * String result = new String(rr, "UTF-8");
-	 * 
-	 * // проверяем все ли ок int pos = result.indexOf("msg:status"); if (pos > 0 && result.indexOf("ok", pos) > 0) {
-	 * pos = result.indexOf("msg:result"); if (pos > 0) { int start = result.indexOf("\"\"\"", pos); int stop =
-	 * result.indexOf("\"\"\"", start + 3);
-	 * 
-	 * result = result.substring(start + 3, stop);
-	 * 
-	 * result = result.replaceAll("\\\\\"", "\"");
-	 * 
-	 * Model message = ModelFactory.createDefaultModel();
-	 * 
-	 * result = predicates.all_prefixs + result; StringReader sr = new StringReader(result); RDFReader r =
-	 * message.getReader("N3"); String baseURI = ""; r.read(message, sr, baseURI); sr.close(); return message; }
-	 * 
-	 * }
-	 * 
-	 * return null; }
-	 */
+	public boolean put(String ticket, JSONArray data, String from)
+	{
+		UUID msg_uuid = UUID.randomUUID();
+
+		String args = JSONArray.toJSONString(data);
+
+		String msg = "{\n \"@\" : \"msg:M" + msg_uuid + "\", \n \"a\" : \"msg:Message\",\n" + "\"msg:sender\" : \""
+				+ from + "\",\n \"msg:ticket\" : \"" + ticket
+				+ "\", \"msg:reciever\" : \"pacahon\",\n \"msg:command\" : \"put\",\n \"msg:args\" :\n" + args + "}";
+
+		// отправляем
+		socket.send(msg.getBytes(), 0);
+
+		byte[] rr = socket.recv(0);
+
+		String result = new String(rr);
+
+		// проверяем все ли ок
+		int pos = result.indexOf("msg:status");
+		if (pos > 0 && result.indexOf("ok", pos) > 0)
+			return true;
+
+		return false;
+	}
+
+	public JSONArray get(String ticket, JSONObject data, String from) throws Exception
+	{
+		UUID msg_uuid = UUID.randomUUID();
+
+		String args = JSONObject.toJSONString(data);
+
+		String msg = "{\n \"@\" : \"msg:M" + msg_uuid + "\", \n \"a\" : \"msg:Message\",\n" + "\"msg:sender\" : \""
+				+ from + "\",\n \"msg:ticket\" : \"" + ticket
+				+ "\", \"msg:reciever\" : \"pacahon\",\n \"msg:command\" : \"get\",\n \"msg:args\" :\n" + args + "}";
+
+		// отправляем
+		socket.send(msg.getBytes(), 0);
+
+		byte[] rr = socket.recv(0);
+
+		String result = new String(rr, "UTF-8");
+
+		// проверяем все ли ок
+		int pos = result.indexOf("msg:status");
+
+		if (pos > 0 && result.indexOf("ok", pos) > 0)
+		{
+			JSONArray res = (JSONArray) jp.parse(result);
+			JSONObject oo = (JSONObject) res.get(0);
+			JSONArray roo = (JSONArray) oo.get("msg:result");
+			if (roo != null)
+				return roo;
+		}
+
+		return null;
+	}
 
 	public static void main(String[] args) throws Exception
 	{
 		PacahonClient pc = new PacahonClient(null);
 		String ticket = pc.get_ticket("admin", "QL0AFWMIX8NRZTKeof9cXsvbvu8=", "test");
-		ticket = ticket;
+
+		JSONParser jp = new JSONParser();
+		String sss = "[{ \"@\" : \"auth:admin3\", \"a\" : \"auth:Authenticated\", \"rdfs:label\" : \"admin1 - админская учетка\",  \"auth:login\" : \"admin3\", \"auth:credential\" : \"QL0AFWMIX8NRZTKeof9cXsvbvu8=\" }]";
+		JSONArray aa = (JSONArray) jp.parse(sss);
+
+		sss = "{ \"@\" : \"auth:subject12\", \"auth:login\" : \"query:get\", \"rdfs:label\" : \"query:get\"}";
+		JSONObject oa = (JSONObject) jp.parse(sss);
+
+		JSONArray raa = pc.get(ticket, oa, "test");
+		raa.toString();
+
 	}
 }
+
