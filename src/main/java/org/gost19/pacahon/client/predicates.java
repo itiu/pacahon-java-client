@@ -12,7 +12,7 @@ public class predicates
 	public static final String rdfs = "http://www.w3.org/2000/01/rdf-schema#";
 	public static final String owl = "http://www.w3.org/2002/07/owl#";
 	public static final String swrc = "http://swrc.ontoware.org/ontology#";
-	public static final String docs19 = "http://gost19.org/docs#";
+	public static final String docs = "http://gost19.org/docs#";
 	public static final String gost19 = "http://gost19.org/base#";
 	public static final String auth = "http://gost19.org/auth#";
 	public static final String zdb = "http://user-db#";
@@ -23,7 +23,7 @@ public class predicates
 	public final static String all_prefixs = "@prefix rdf: <" + rdf + "> .\n" + "@prefix rdfs: <" + rdfs + "> .\n"
 			+ "@prefix xsd: <" + xsd + "> .\n" + "@prefix msg: <" + msg + "> .\n" + "@prefix auth: <" + auth + "> .\n"
 			+ "@prefix zdb: <" + zdb + "> .\n" + "@prefix gost19: <" + gost19 + "> .\n" + "@prefix swrc: <" + swrc
-			+ "> .\n" + "@prefix docs19: <" + docs19 + "> .\n";
+			+ "> .\n" + "@prefix docs: <" + docs + "> .\n";
 
 	public static final String ns_f_user_onto = "http://user-onto.org";
 
@@ -34,12 +34,12 @@ public class predicates
 	public static final String _owl = "owl:";
 	public static final String _swrc = "swrc:";
 
-	public static final String _docs19 = "docs19:";
+	public static final String _docs = "docs:";
 	public static final String _gost19 = "gost19:";
 	public static final String _auth = "auth:";
 	public static final String _zdb = "zdb:";
 	public static final String _query = "query:";
-
+	
 	public static final String _user_onto = "user_onto";
 
 	public static final String f_user_onto = "http://user-onto.org";
@@ -102,25 +102,27 @@ public class predicates
 	public static final String gost19__middlename = gost19 + "middlename";
 	public static final String gost19__externalIdentifer = gost19 + "externalIdentifer";
 
-	public static final String docs19__FileDescription = docs19 + "FileDescription";
-	public static final String docs19__file = docs19 + "file";
-	public static final String docs19__tumbnail = docs19 + "tumbnail";
-	public static final String docs19__department = docs19 + "department";
-	public static final String docs19__department_card = docs19 + "department_card";
-	public static final String docs19__parentDepartment = docs19 + "parentDepartment";
-	public static final String docs19__employee_card = docs19 + "employee_card";
-	public static final String docs19__employee = docs19 + "employee";
-	public static final String docs19__organization_card = docs19 + "organization_card";
-	public static final String docs19__pager = docs19 + "pager";
-	public static final String docs19__Document = docs19 + "Document";
-	public static final String docs19__carbon_copy = docs19 + "carbon_copy";
-	public static final String docs19__dateInterval = docs19 + "dateInterval";
-	public static final String docs19__contractor = docs19 + "contractor";
-	public static final String docs19__link = docs19 + "link";
-	public static final String docs19__content = docs19 + "content";
-	public static final String docs19__from = docs19 + "from";
-	public static final String docs19__to = docs19 + "to";
-	public static final String docs19__position = docs19 + "position";
+	public static final String docs__Group = docs + "Group";
+	public static final String docs__Document = docs + "Document";
+	public static final String docs__FileDescription = docs + "FileDescription";
+	public static final String docs__file = docs + "file";
+	public static final String docs__tumbnail = docs + "tumbnail";
+	public static final String docs__unit = docs + "unit";
+	public static final String docs__department_card = docs + "department_card";
+	public static final String docs__parentUnit = docs + "parentUnit";
+	public static final String docs__employee_card = docs + "employee_card";
+	public static final String docs__employee = docs + "employee";
+	public static final String docs__organization_card = docs + "organization_card";
+	public static final String docs__pager = docs + "pager";
+	public static final String docs__carbon_copy = docs + "carbon_copy";
+	public static final String docs__dateInterval = docs + "dateInterval";
+	public static final String docs__contractor = docs + "contractor";
+	public static final String docs__link = docs + "link";
+	public static final String docs__content = docs + "content";
+	public static final String docs__from = docs + "from";
+	public static final String docs__to = docs + "to";
+	public static final String docs__position = docs + "position";
+	public static final String docs__active = docs + "active";
 
 	public static final String auth__login = auth + "login";
 	public static final String auth__credential = auth + "credential";
@@ -141,7 +143,7 @@ public class predicates
 			prefixs.put("msg", msg);
 			prefixs.put("zdb", zdb);
 			prefixs.put("swrc", swrc);
-			prefixs.put("docs19", docs19);
+			prefixs.put("docs", docs);
 			prefixs.put("gost19", gost19);
 			prefixs.put("query", query);
 			prefixs.put("auth", auth);
