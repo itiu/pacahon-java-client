@@ -26,7 +26,7 @@ public class PacahonClient
 		jp = new JSONParser();
 	}
 
-	public String get_ticket(String login, String credential, String from) throws Exception
+	public synchronized String get_ticket(String login, String credential, String from) throws Exception
 	{
 		String ticket = null;
 
@@ -60,7 +60,7 @@ public class PacahonClient
 		return ticket;
 	}
 
-	public boolean put(String ticket, JSONArray data, String from)
+	public synchronized boolean put(String ticket, JSONArray data, String from)
 	{
 		UUID msg_uuid = UUID.randomUUID();
 
@@ -85,7 +85,7 @@ public class PacahonClient
 		return false;
 	}
 
-	public JSONArray get(String ticket, JSONObject data, String from) throws Exception
+	public synchronized JSONArray get(String ticket, JSONObject data, String from) throws Exception
 	{
 		UUID msg_uuid = UUID.randomUUID();
 
