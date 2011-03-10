@@ -96,7 +96,9 @@ public class PacahonClient
 				+ "\", \"msg:reciever\" : \"pacahon\",\n \"msg:command\" : \"get\",\n \"msg:args\" :\n" + args + "}";
 
 		// отправляем
-		socket.send(msg.getBytes(), 0);
+//		msg = new String (msg.getBytes(), "UTF-8");
+		
+		socket.send(msg.getBytes("UTF-8"), 0);
 
 		byte[] rr = socket.recv(0);
 
