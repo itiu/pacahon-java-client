@@ -85,7 +85,7 @@ public class PacahonClient
 		return false;
 	}
 
-	public synchronized JSONArray get(String ticket, JSONObject data, String from) throws Exception
+	public String get_command_as_string(String ticket, JSONObject data, String from)
 	{
 		UUID msg_uuid = UUID.randomUUID();
 
@@ -95,9 +95,42 @@ public class PacahonClient
 				+ from + "\",\n \"msg:ticket\" : \"" + ticket
 				+ "\", \"msg:reciever\" : \"pacahon\",\n \"msg:command\" : \"get\",\n \"msg:args\" :\n" + args + "}";
 
+		return msg;
+	}
+
+	public synchronized JSONArray send(String ticket, String msg, String from) throws Exception
+	{
 		// отправляем
-//		msg = new String (msg.getBytes(), "UTF-8");
-		
+		//		msg = new String (msg.getBytes(), "UTF-8");
+
+		socket.send(msg.getBytes("UTF-8"), 0);
+
+		byte[] rr = socket.recv(0);
+
+		String result = new String(rr, "UTF-8");
+
+		// проверяем все ли ок
+		int pos = result.indexOf("msg:status");
+
+		if (pos > 0 && result.indexOf("ok", pos) > 0)
+		{
+			JSONArray res = (JSONArray) jp.parse(result);
+			JSONObject oo = (JSONObject) res.get(0);
+			JSONArray roo = (JSONArray) oo.get("msg:result");
+			if (roo != null)
+				return roo;
+		}
+
+		return null;
+	}
+
+	public synchronized JSONArray get(String ticket, JSONObject data, String from) throws Exception
+	{
+		String msg = get_command_as_string(ticket, data, from);
+
+		// отправляем
+		//		msg = new String (msg.getBytes(), "UTF-8");
+
 		socket.send(msg.getBytes("UTF-8"), 0);
 
 		byte[] rr = socket.recv(0);
@@ -136,4 +169,3 @@ public class PacahonClient
 
 	}
 }
-
