@@ -129,6 +129,7 @@ public class predicates
 	public static final String auth__Authenticated = auth + "Authenticated";
 
 	public static final String query__get = query + "get";
+	public static final String query__all_predicates = query + "all_predicates";
 
 	public static final String msg__Message = msg + "Message";
 
