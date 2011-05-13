@@ -82,6 +82,9 @@ public class predicates
 	public static final String dc__description = dc + "description";
 	public static final String dc__date = dc + "date";
 
+        public static final String dc__dateSubmitted = dc + "dateSubmitted";
+	public static final String dc__modified = dc + "modified";
+
 	public static final String swrc__Department = swrc + "Department";
 	public static final String swrc__Person = swrc + "Person";
 	public static final String swrc__name = swrc + "name";
@@ -92,7 +95,6 @@ public class predicates
 	public static final String swrc__email = swrc + "email";
 	public static final String swrc__phone = swrc + "phone";
 	public static final String swrc__photo = swrc + "photo";
-	public static final String swrc__creationDate = swrc + "creationDate";
 	public static final String swrc__endDate = swrc + "endDate";
 	public static final String swrc__startDate = swrc + "startDate";
 	public static final String swrc__keywords = swrc + "keywords";

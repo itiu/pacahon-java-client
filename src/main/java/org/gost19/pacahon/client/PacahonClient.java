@@ -23,6 +23,14 @@ public class PacahonClient
 
 		socket.connect(connectTo);
 
+//		socket.connect("tcp://172.17.4.66:5556");
+		
+//		socket.connect("tcp://172.17.4.64:5557");
+		
+//		socket.connect("tcp://172.17.4.64:5558");
+		
+//		socket.connect("tcp://172.17.4.64:5559");
+
 		jp = new JSONParser();
 	}
 
