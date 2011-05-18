@@ -23,14 +23,6 @@ public class PacahonClient
 
 		socket.connect(connectTo);
 
-//		socket.connect("tcp://172.17.4.66:5556");
-		
-//		socket.connect("tcp://172.17.4.64:5557");
-		
-//		socket.connect("tcp://172.17.4.64:5558");
-		
-//		socket.connect("tcp://172.17.4.64:5559");
-
 		jp = new JSONParser();
 	}
 
@@ -49,11 +41,11 @@ public class PacahonClient
 
 		byte[] rr = socket.recv(0);
 
-		String result = new String(rr);
-
+		String result = new String(rr, "UTF-8");
+		
 		JSONArray aa = (JSONArray) jp.parse(result);
 
-		aa.size();
+//		aa.size();
 
 		String auth_tag = "auth:ticket";
 
@@ -68,7 +60,7 @@ public class PacahonClient
 		return ticket;
 	}
 
-	public synchronized boolean put(String ticket, JSONArray data, String from)
+	public synchronized boolean put(String ticket, JSONArray data, String from) throws Exception
 	{
 		UUID msg_uuid = UUID.randomUUID();
 
@@ -83,7 +75,7 @@ public class PacahonClient
 
 		byte[] rr = socket.recv(0);
 
-		String result = new String(rr);
+		String result = new String(rr, "UTF-8");	
 
 		// проверяем все ли ок
 		int pos = result.indexOf("msg:status");
@@ -115,7 +107,7 @@ public class PacahonClient
 
 		byte[] rr = socket.recv(0);
 
-		String result = new String(rr, "UTF-8");
+		String result = new String(rr, "UTF-8");	
 
 		// проверяем все ли ок
 		int pos = result.indexOf("msg:status");
@@ -143,7 +135,7 @@ public class PacahonClient
 
 		byte[] rr = socket.recv(0);
 
-		String result = new String(rr, "UTF-8");
+		String result = new String(rr, "UTF-8");	
 
 		// проверяем все ли ок
 		int pos = result.indexOf("msg:status");
