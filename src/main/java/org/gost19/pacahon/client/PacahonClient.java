@@ -6,22 +6,37 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.zeromq.ZMQ;
+import org.zeromq.ZMQ.Poller;
 
 public class PacahonClient
 {
-	ZMQ.Context ctx;
-	ZMQ.Socket socket;
-	JSONParser jp;
+	boolean zmq_msg_non_block_read_mode = false;
 
-	public PacahonClient(String connectTo)
+	private final static int REQUEST_TIMEOUT = 2500; //  msecs, (> 1000!)
+	private final static int REQUEST_RETRIES = 50; //  Before we abandon
+
+	private ZMQ.Context ctx;
+	private ZMQ.Socket socket;
+	private JSONParser jp;
+	private String connectTo;
+
+	public PacahonClient(String _connectTo)
 	{
+		String zmq_msg_read_mode = System.getProperty("zmq_msg_read_mode");
+		if (zmq_msg_read_mode != null && zmq_msg_read_mode.equals("nonblock"))
+			zmq_msg_non_block_read_mode = true;
+
+		connectTo = _connectTo;
+
 		if (connectTo == null)
 			connectTo = "tcp://172.17.4.64:5555";
 
 		ctx = ZMQ.context(1);
 		socket = ctx.socket(ZMQ.REQ);
-
+		//		socket.setLinger(0);
+		System.out.println("I: connect to server [" + connectTo + "]...");
 		socket.connect(connectTo);
+		System.out.println("Ok");
 
 		jp = new JSONParser();
 	}
@@ -37,15 +52,14 @@ public class PacahonClient
 				+ "\"msg:command\" : \"get_ticket\",\n" + "\"msg:args\" :\n" + "{\n" + "\"auth:login\" : \"" + login
 				+ "\",\n" + "\"auth:credential\" : \"" + credential + "\"\n" + "}\n" + "}";
 
-		socket.send(msg.getBytes(), 0);
+		//		socket.send(msg.getBytes(), 0);
+		//		byte[] rr = socket.recv(0);
+		//		String result = new String(rr, "UTF-8");
 
-		byte[] rr = socket.recv(0);
+		String result = send_recv(msg);
 
-		String result = new String(rr, "UTF-8");
-		
-		JSONArray aa = (JSONArray) jp.parse(result);
-
-//		aa.size();
+		//		JSONArray aa = (JSONArray) jp.parse(result);
+		//		aa.size();
 
 		String auth_tag = "auth:ticket";
 
@@ -60,6 +74,81 @@ public class PacahonClient
 		return ticket;
 	}
 
+	private String send_recv(String msg) throws Exception
+	{
+		if (zmq_msg_non_block_read_mode == false)
+		{
+
+			socket.send(msg.getBytes(), 0);
+			byte[] rr = socket.recv(0);
+			String result = new String(rr, "UTF-8");
+			return result;
+		} else
+		{
+			int retries_left = REQUEST_RETRIES;
+
+			while (retries_left > 0)
+			{
+				socket.send(msg.getBytes(), 0);
+
+				boolean expect_reply = true;
+				while (expect_reply)
+				{
+					//  Initialize poll set
+					Poller items = ctx.poller(Poller.POLLIN);
+					items.register(socket);
+					long rc = items.poll(REQUEST_TIMEOUT * 1000);
+
+					if (rc == -1)
+						break;
+
+					//  Poll socket for a reply, with timeout
+					//	            zmq::pollitem_t items[] = { { *client, 0, ZMQ_POLLIN, 0 } };
+					//	            zmq::poll (&items[0], 1, REQUEST_TIMEOUT * 1000);
+
+					//  If we got a reply, process it
+					if (items.pollin(0))
+					{
+						//  We got a reply from the server, must match sequence
+						byte[] rr = socket.recv(0);
+
+						String result = new String(rr, "UTF-8");
+						return result;
+					} else
+					{
+						retries_left = retries_left - 1;
+
+						if (retries_left == 0)
+						{
+							System.out.println("E: server seems to be offline, abandoning");
+							expect_reply = false;
+							break;
+						} else
+						{
+							System.out.println("W: no response from server [" + connectTo + "], retrying...");
+							//  Old socket will be confused; close it and open a new one
+							items.unregister(socket);
+							socket.close();
+
+							System.out.println("sleep 1s");
+							Thread.currentThread().sleep(1000);
+
+							socket = ctx.socket(ZMQ.REQ);
+							socket.connect(connectTo);
+							//						socket.setLinger(0);
+
+							//  Send request again, on new socket
+							socket.send(msg.getBytes(), 0);
+						}
+
+					}
+				}
+			}
+		}
+
+		return null;
+	}
+
 	public synchronized boolean put(String ticket, JSONArray data, String from) throws Exception
 	{
 		UUID msg_uuid = UUID.randomUUID();
@@ -71,11 +160,11 @@ public class PacahonClient
 				+ "\", \"msg:reciever\" : \"pacahon\",\n \"msg:command\" : \"put\",\n \"msg:args\" :\n" + args + "}";
 
 		// отправляем
-		socket.send(msg.getBytes(), 0);
+		//		socket.send(msg.getBytes(), 0);
+		//		byte[] rr = socket.recv(0);
+		//		String result = new String(rr, "UTF-8");	
 
-		byte[] rr = socket.recv(0);
-
-		String result = new String(rr, "UTF-8");	
+		String result = send_recv(msg);
 
 		// проверяем все ли ок
 		int pos = result.indexOf("msg:status");
@@ -101,13 +190,13 @@ public class PacahonClient
 	public synchronized JSONArray send(String ticket, String msg, String from) throws Exception
 	{
 		// отправляем
-		//		msg = new String (msg.getBytes(), "UTF-8");
+		msg = new String (msg.getBytes(), "UTF-8");
 
-		socket.send(msg.getBytes("UTF-8"), 0);
+		String result = send_recv(msg);
 
-		byte[] rr = socket.recv(0);
-
-		String result = new String(rr, "UTF-8");	
+		//		socket.send(msg.getBytes("UTF-8"), 0);
+		//		byte[] rr = socket.recv(0);
+		//		String result = new String(rr, "UTF-8");	
 
 		// проверяем все ли ок
 		int pos = result.indexOf("msg:status");
@@ -129,13 +218,13 @@ public class PacahonClient
 		String msg = get_command_as_string(ticket, data, from);
 
 		// отправляем
-		//		msg = new String (msg.getBytes(), "UTF-8");
+		msg = new String (msg.getBytes(), "UTF-8");
 
-		socket.send(msg.getBytes("UTF-8"), 0);
+		String result = send_recv(msg);
 
-		byte[] rr = socket.recv(0);
-
-		String result = new String(rr, "UTF-8");	
+		//		socket.send(msg.getBytes("UTF-8"), 0);
+		//		byte[] rr = socket.recv(0);
+		//		String result = new String(rr, "UTF-8");	
 
 		// проверяем все ли ок
 		int pos = result.indexOf("msg:status");
