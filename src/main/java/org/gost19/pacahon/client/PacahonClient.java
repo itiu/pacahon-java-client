@@ -79,7 +79,7 @@ public class PacahonClient
 		if (zmq_msg_non_block_read_mode == false)
 		{
 
-			socket.send(msg.getBytes(), 0);
+			socket.send(msg.getBytes("UTF-8"), 0);
 			byte[] rr = socket.recv(0);
 			String result = new String(rr, "UTF-8");
 			return result;
@@ -190,7 +190,7 @@ public class PacahonClient
 	public synchronized JSONArray send(String ticket, String msg, String from) throws Exception
 	{
 		// отправляем
-		msg = new String (msg.getBytes(), "UTF-8");
+//		msg = new String (msg.getBytes("UTF-8"), "UTF-8");
 
 		String result = send_recv(msg);
 
@@ -218,7 +218,7 @@ public class PacahonClient
 		String msg = get_command_as_string(ticket, data, from);
 
 		// отправляем
-		msg = new String (msg.getBytes(), "UTF-8");
+//		msg = new String (msg.getBytes(), "UTF-8");
 
 		String result = send_recv(msg);
 
