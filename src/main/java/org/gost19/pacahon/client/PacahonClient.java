@@ -74,6 +74,26 @@ public class PacahonClient
 		return ticket;
 	}
 
+	public synchronized boolean remove_subject(String subject, String from) throws Exception
+	{
+		UUID msg_uuid = UUID.randomUUID();
+
+		String msg = "{\n" + "\"@\" : \"msg:M" + msg_uuid + "\", \n" + "\"a\" : \"msg:Message\",\n"
+				+ "\"msg:sender\" : \"" + from + "\",\n" + "\"msg:reciever\" : \"pacahon\",\n"
+				+ "\"msg:command\" : \"get_ticket\",\n" + "\"msg:args\" :\n" + "{\n" + "\"rfd:subject\" : \"" + subject
+				+ "\",\n" + "\"\n" + "}\n" + "}";
+
+		String result = send_recv(msg);
+
+		int pos = result.indexOf("ok");
+		if (pos > 0)
+		{
+			return true;
+		}
+
+		return false;
+	}
+
 	private String send_recv(String msg) throws Exception
 	{
 		if (zmq_msg_non_block_read_mode == false)
@@ -190,7 +210,7 @@ public class PacahonClient
 	public synchronized JSONArray send(String ticket, String msg, String from) throws Exception
 	{
 		// отправляем
-//		msg = new String (msg.getBytes("UTF-8"), "UTF-8");
+		//		msg = new String (msg.getBytes("UTF-8"), "UTF-8");
 
 		String result = send_recv(msg);
 
@@ -218,7 +238,7 @@ public class PacahonClient
 		String msg = get_command_as_string(ticket, data, from);
 
 		// отправляем
-//		msg = new String (msg.getBytes(), "UTF-8");
+		//		msg = new String (msg.getBytes(), "UTF-8");
 
 		String result = send_recv(msg);
 
