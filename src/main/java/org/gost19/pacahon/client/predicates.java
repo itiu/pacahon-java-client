@@ -82,7 +82,7 @@ public class predicates
 	public static final String dc__description = dc + "description";
 	public static final String dc__date = dc + "date";
 
-        public static final String dc__dateSubmitted = dc + "dateSubmitted";
+    public static final String dc__dateSubmitted = dc + "dateSubmitted";
 	public static final String dc__modified = dc + "modified";
 
 	public static final String swrc__Department = swrc + "Department";

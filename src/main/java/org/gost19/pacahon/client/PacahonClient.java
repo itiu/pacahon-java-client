@@ -74,14 +74,14 @@ public class PacahonClient
 		return ticket;
 	}
 
-	public synchronized boolean remove_subject(String subject, String from) throws Exception
+	public synchronized boolean remove_subject(String ticket, String subject, String from) throws Exception
 	{
 		UUID msg_uuid = UUID.randomUUID();
 
 		String msg = "{\n" + "\"@\" : \"msg:M" + msg_uuid + "\", \n" + "\"a\" : \"msg:Message\",\n"
-				+ "\"msg:sender\" : \"" + from + "\",\n" + "\"msg:reciever\" : \"pacahon\",\n"
-				+ "\"msg:command\" : \"get_ticket\",\n" + "\"msg:args\" :\n" + "{\n" + "\"rfd:subject\" : \"" + subject
-				+ "\",\n" + "\"\n" + "}\n" + "}";
+				+ "\"msg:sender\" : \"" + from + "\",\n \"msg:ticket\" : \"" + ticket + "\",\n"
+				+ "\"msg:reciever\" : \"pacahon\",\n" + "\"msg:command\" : \"remove\",\n" + "\"msg:args\" :\n" + "{\n"
+				+ "\"rdf:subject\" : \"" + subject + "\"\n" + "}\n" + "}";
 
 		String result = send_recv(msg);
 
