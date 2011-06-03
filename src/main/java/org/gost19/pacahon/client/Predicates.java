@@ -44,6 +44,7 @@ public class Predicates
 	public static final String rdfs__subClassOf = rdfs + "subClassOf";
 	public static final String rdfs__Class = rdfs + "Class";
 	public static final String rdfs__label = rdfs + "label";
+	public static final String rdfs__comment = rdfs + "comment"; 
 
 	public static final String dc__creator = dc + "creator";
 	public static final String dc__identifier = dc + "identifier";
@@ -52,6 +53,7 @@ public class Predicates
 	public static final String dc__type = dc + "type";
 	public static final String dc__description = dc + "description";
 	public static final String dc__date = dc + "date";
+	public static final String dc__hasPart = dc + "hasPart"; 
 
 	public static final String dc__dateSubmitted = dc + "dateSubmitted";
 	public static final String dc__modified = dc + "modified";
@@ -79,6 +81,8 @@ public class Predicates
 	public static final String gost19__internal_phone = gost19 + "internal_phone";
 	public static final String gost19__mobile = gost19 + "mobile";
 	public static final String gost19__work_mobile = gost19 + "work_mobile";
+	public static final String gost19__volatile = gost19 + "volatile";	
+	public static final String gost19__representation = gost19 + "representation"; 
 
 	public static final String docs__Group = docs + "Group";
 	public static final String docs__Document = docs + "Document";
@@ -102,6 +106,8 @@ public class Predicates
 	public static final String docs__position = docs + "position";
 	public static final String docs__active = docs + "active";
 	public static final String docs__unit_card = docs + "unit_card"; 	
+	public static final String docs__actual = docs + "actual";
+	public static final String docs__kindOf = docs + "kindOf"; 
 
 	public static final String auth__login = auth + "login";
 	public static final String auth__credential = auth + "credential";
