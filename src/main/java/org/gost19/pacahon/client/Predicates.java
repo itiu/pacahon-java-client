@@ -35,7 +35,7 @@ public class Predicates
 	public static final String xsd__integer = xsd + "integer";
 	public static final String xsd__nonNegativeInteger = xsd + "nonNegativeInteger";
 
-	public static final String rdf__type = rdf + "type";
+	public static final String rdf__type = "a";
 	public static final String rdf__subject = rdf + "subject";
 	public static final String rdf__predicate = rdf + "predicate";
 	public static final String rdf__object = rdf + "object";
