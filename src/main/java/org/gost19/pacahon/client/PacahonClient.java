@@ -177,7 +177,7 @@ public class PacahonClient
 
 		String msg = "{\n \"@\" : \"msg:M" + msg_uuid + "\", \n \"a\" : \"msg:Message\",\n" + "\"msg:sender\" : \""
 				+ from + "\",\n \"msg:ticket\" : \"" + ticket
-				+ "\", \"msg:reciever\" : \"pacahon\",\n \"msg:command\" : \"put\",\n \"msg:args\" :\n" + args + "}";
+				+ "\", \"msg:reciever\" : \"pacahon\",\n \"msg:command\" : \"put\",\n \"msg:args\" :\n" + args + "\n}";
 
 		// отправляем
 		//		socket.send(msg.getBytes(), 0);
@@ -202,7 +202,7 @@ public class PacahonClient
 
 		String msg = "{\n \"@\" : \"msg:M" + msg_uuid + "\", \n \"a\" : \"msg:Message\",\n" + "\"msg:sender\" : \""
 				+ from + "\",\n \"msg:ticket\" : \"" + ticket
-				+ "\", \"msg:reciever\" : \"pacahon\",\n \"msg:command\" : \"get\",\n \"msg:args\" :\n" + args + "}";
+				+ "\", \"msg:reciever\" : \"pacahon\",\n \"msg:command\" : \"get\",\n \"msg:args\" :\n" + args + "\n}";
 
 		return msg;
 	}
