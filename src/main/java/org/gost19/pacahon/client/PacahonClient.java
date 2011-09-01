@@ -29,7 +29,7 @@ public class PacahonClient
 		connectTo = _connectTo;
 
 		if (connectTo == null)
-			connectTo = "tcp://172.17.4.64:5555";
+			connectTo = "tcp://localhost:5555";
 
 		ctx = ZMQ.context(1);
 		socket = ctx.socket(ZMQ.REQ);
@@ -151,7 +151,7 @@ public class PacahonClient
 							socket.close();
 
 							System.out.println("sleep 1s");
-							Thread.currentThread().sleep(1000);
+							Thread.sleep(1000);
 
 							socket = ctx.socket(ZMQ.REQ);
 							socket.connect(connectTo);
@@ -251,11 +251,21 @@ public class PacahonClient
 
 		if (pos > 0 && result.indexOf("ok", pos) > 0)
 		{
-			JSONArray res = (JSONArray) jp.parse(result);
-			JSONObject oo = (JSONObject) res.get(0);
-			JSONArray roo = (JSONArray) oo.get("msg:result");
-			if (roo != null)
-				return roo;
+			if (result.charAt(0) == '[')
+			{
+				JSONArray res = (JSONArray) jp.parse(result);
+
+				JSONObject oo = (JSONObject) res.get(0);
+				JSONArray roo = (JSONArray) oo.get("msg:result");
+				if (roo != null)
+					return roo;
+			} else
+			{
+				JSONObject oo = (JSONObject) jp.parse(result);
+				JSONArray roo = (JSONArray) oo.get("msg:result");
+				if (roo != null)
+					return roo;
+			}
 		}
 
 		return null;
