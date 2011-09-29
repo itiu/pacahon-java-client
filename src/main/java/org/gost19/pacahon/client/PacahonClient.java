@@ -194,7 +194,7 @@ public class PacahonClient
 		return false;
 	}
 
-	public String command_as_string(String ticket, String command, JSONObject data, String from)
+	public static String command_as_string(String ticket, String command, JSONObject data, String from)
 	{
 		UUID msg_uuid = UUID.randomUUID();
 
