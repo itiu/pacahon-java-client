@@ -16,6 +16,7 @@ public class Predicates
 	public static final String user_onto = "User_onto:";
 	public static final String msg = "msg:";
 	public static final String query = "query:";
+	public static final String dms = "dms:";
 
 	// //////////////////////////////////////////////////////////////////////////////////////////////////
 	public static final String owl__Ontology = owl + "Ontology";
@@ -46,6 +47,7 @@ public class Predicates
 	public static final String rdfs__label = rdfs + "label";
 	public static final String rdfs__comment = rdfs + "comment"; 
 
+	public static final String dc__created = dc + "created";
 	public static final String dc__creator = dc + "creator";
 	public static final String dc__identifier = dc + "identifier";
 	public static final String dc__subject = dc + "subject";
@@ -83,9 +85,11 @@ public class Predicates
 	public static final String gost19__work_mobile = gost19 + "work_mobile";
 	public static final String gost19__volatile = gost19 + "volatile";	
 	public static final String gost19__representation = gost19 + "representation"; 
+	public static final String gost19__template = gost19 + "template"; 
 
 	public static final String docs__Group = docs + "Group";
 	public static final String docs__Document = docs + "Document";
+	public static final String docs__document = docs + "document";
 	public static final String docs__FileDescription = docs + "FileDescription";
 	public static final String docs__file = docs + "file";
 	public static final String docs__tumbnail = docs + "tumbnail";
@@ -108,6 +112,7 @@ public class Predicates
 	public static final String docs__unit_card = docs + "unit_card"; 	
 	public static final String docs__actual = docs + "actual";
 	public static final String docs__kindOf = docs + "kindOf"; 
+	public static final String docs__isDraft = docs + "isDraft"; 
 
 	public static final String auth__login = auth + "login";
 	public static final String auth__credential = auth + "credential";
@@ -121,4 +126,5 @@ public class Predicates
 
 	public static final String msg__Message = msg + "Message";
 
+	public static final String dms__wasReadNews = dms + "wasReadNews"; 	
 }
