@@ -1,1 +1,7 @@
 pacahon client for java
+
+dependency:
+
+jzmq 1.1.0 github:zeromq:ac05963
+
+wget --no-check-certificate https://github.com/zeromq/jzmq/zipball/ac0596331ea5a06d87b2d09018ffa48f5a8591b8
