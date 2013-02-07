@@ -1,6 +1,7 @@
 package org.gost19.pacahon.client;
 
 import java.util.UUID;
+import java.util.concurrent.Semaphore;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -207,81 +208,102 @@ public class PacahonClient
 		return msg;
 	}
 
+	private final Semaphore semaphore_send = new Semaphore(1);
+
 	public synchronized JSONArray send(String ticket, String msg, String from) throws Exception
 	{
-		// отправляем
-		//		msg = new String (msg.getBytes("UTF-8"), "UTF-8");
-
-		String result = send_recv(msg);
-
-		//		socket.send(msg.getBytes("UTF-8"), 0);
-		//		byte[] rr = socket.recv(0);
-		//		String result = new String(rr, "UTF-8");	
-
-		// проверяем все ли ок
-		int pos = result.indexOf("msg:status");
-
-		if (pos > 0 && result.indexOf("ok", pos) > 0)
+		try
 		{
-			JSONArray res = (JSONArray) jp.parse(result);
-			JSONObject oo = (JSONObject) res.get(0);
-			JSONArray roo = (JSONArray) oo.get("msg:result");
-			if (roo != null)
-				return roo;
+			semaphore_send.acquireUninterruptibly();
+			// отправляем
+			//		msg = new String (msg.getBytes("UTF-8"), "UTF-8");
+
+			String result = send_recv(msg);
+
+			//		socket.send(msg.getBytes("UTF-8"), 0);
+			//		byte[] rr = socket.recv(0);
+			//		String result = new String(rr, "UTF-8");	
+
+			// проверяем все ли ок
+			int pos = result.indexOf("msg:status");
+
+			if (pos > 0 && result.indexOf("ok", pos) > 0)
+			{
+				JSONArray res = (JSONArray) jp.parse(result);
+				JSONObject oo = (JSONObject) res.get(0);
+				JSONArray roo = (JSONArray) oo.get("msg:result");
+				if (roo != null)
+					return roo;
+			}
+		} finally
+		{
+			semaphore_send.release();
 		}
 
 		return null;
 	}
 
+	private final Semaphore semaphore_get = new Semaphore(1);
+
 	public synchronized JSONArray get(String ticket, JSONObject data, String from) throws Exception
 	{
-		String msg = command_as_string(ticket, "get", data, from);
-
-		// отправляем
-		//		msg = new String (msg.getBytes(), "UTF-8");
-
-		String result = send_recv(msg);
-
-		//		socket.send(msg.getBytes("UTF-8"), 0);
-		//		byte[] rr = socket.recv(0);
-		//		String result = new String(rr, "UTF-8");	
-
-		// проверяем все ли ок
-		int pos = result.indexOf("msg:status");
-
-		if (pos > 0 && result.indexOf("ok", pos) > 0)
+		try
 		{
-			if (result.charAt(0) == '[')
+			semaphore_get.acquireUninterruptibly();
+
+			String msg = command_as_string(ticket, "get", data, from);
+
+			// отправляем
+			//		msg = new String (msg.getBytes(), "UTF-8");
+
+			String result = send_recv(msg);
+
+			//		socket.send(msg.getBytes("UTF-8"), 0);
+			//		byte[] rr = socket.recv(0);
+			//		String result = new String(rr, "UTF-8");	
+
+			// проверяем все ли ок
+			int pos = result.indexOf("msg:status");
+
+			if (pos > 0 && result.indexOf("ok", pos) > 0)
 			{
-				JSONArray res = (JSONArray) jp.parse(result);
-
-				JSONObject oo = (JSONObject) res.get(0);
-
-				Object oroo = oo.get("msg:result");
-
-				if (oroo != null)
+				if (result.charAt(0) == '[')
 				{
-					if (oroo instanceof JSONArray)
-						return (JSONArray) oroo;
+					JSONArray res = (JSONArray) jp.parse(result);
 
-					if (oroo instanceof JSONObject)
+					JSONObject oo = (JSONObject) res.get(0);
+
+					Object oroo = oo.get("msg:result");
+
+					if (oroo != null)
 					{
-						JSONArray roo = new JSONArray();
+						if (oroo instanceof JSONArray)
+							return (JSONArray) oroo;
 
-						roo.add(oroo);
+						if (oroo instanceof JSONObject)
+						{
+							JSONArray roo = new JSONArray();
 
-						return roo;
+							roo.add(oroo);
+
+							return roo;
+						}
 					}
+				} else
+				{
+					JSONObject oo = (JSONObject) jp.parse(result);
+					JSONArray roo = (JSONArray) oo.get("msg:result");
+					if (roo != null)
+						return roo;
 				}
-			} else
-			{
-				JSONObject oo = (JSONObject) jp.parse(result);
-				JSONArray roo = (JSONArray) oo.get("msg:result");
-				if (roo != null)
-					return roo;
 			}
+		} catch (Exception ex)
+		{
+			throw ex;
+		} finally
+		{
+			semaphore_get.release();
 		}
-
 		return null;
 	}
 
