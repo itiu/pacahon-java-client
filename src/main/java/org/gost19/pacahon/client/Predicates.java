@@ -82,6 +82,10 @@ public class Predicates
 	public static final String gost19__synchronize = gost19 + "synchronize";
 	public static final String gost19__internal_phone = gost19 + "internal_phone";
 	public static final String gost19__mobile = gost19 + "mobile";
+	public static final String gost19__offlineDateBegin = gost19 + "offlineDateBegin";
+	public static final String gost19__offlineDateEnd = gost19 + "offlineDateEnd";
+	public static final String gost19__employeeCategoryR3 = gost19 + "employeeCategoryR3";
+	public static final String gost19__blocked = gost19 + "blocked";
 	public static final String gost19__work_mobile = gost19 + "work_mobile";
 	public static final String gost19__volatile = gost19 + "volatile";	
 	public static final String gost19__representation = gost19 + "representation"; 
