@@ -90,6 +90,7 @@ public class Predicates
 	public static final String gost19__volatile = gost19 + "volatile";	
 	public static final String gost19__representation = gost19 + "representation"; 
 	public static final String gost19__template = gost19 + "template";
+	public static final String gost19__headId = gost19+"headId";
 
 	public static final String docs__Group = docs + "Group";
 	public static final String docs__Document = docs + "Document";
